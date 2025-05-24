@@ -18,6 +18,7 @@ _LOGGER = getLogger(__name__)
 PLATFORMS: list[Platform] = [
     Platform.BUTTON,
     Platform.CLIMATE,
+    Platform.FAN,
     Platform.LOCK,
     Platform.SENSOR,
     Platform.SWITCH,
@@ -35,6 +36,7 @@ class SwitchbotDevices:
     sensors: list[Device] = field(default_factory=list)
     vacuums: list[Device] = field(default_factory=list)
     locks: list[Device] = field(default_factory=list)
+    fans: list[Remote] = field(default_factory=list)
 
 
 @dataclass
@@ -78,7 +80,6 @@ async def make_switchbot_devices(
             for device in devices
         ]
     )
-
     return devices_data
 
 
@@ -153,11 +154,12 @@ async def make_device_data(
             else:
                 devices_data.switches.append((device, coordinator))
 
+    # add device <Battery Circulator Fan>
     if isinstance(device, Device) and device.device_type in ["Battery Circulator Fan"]:
         coordinator = await coordinator_for_device(
             hass, entry, api, device, coordinators_by_id
         )
-        devices_data.switches.append((device, coordinator))
+        devices_data.fans.append((device, coordinator))
         devices_data.sensors.append((device, coordinator))
 
 
