@@ -1,4 +1,4 @@
-"""Support for the Switchbot Bot as a Button."""
+"""Support for the Switchbot Battery Circulator fan."""
 
 from typing import Any
 
