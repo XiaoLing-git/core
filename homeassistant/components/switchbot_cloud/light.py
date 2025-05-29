@@ -1,6 +1,6 @@
 """Support for the Switchbot Light."""
 
-from homeassistant.components.light import LightEntity, LightEntityFeature
+from homeassistant.components.light import ColorMode, LightEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
@@ -26,8 +26,9 @@ async def async_setup_entry(
 class SwitchBotCloudLight(SwitchBotCloudEntity, LightEntity):
     """Representation of a SwitchBot Battery Circulator Fan."""
 
-    _attr_supported_features = (
-        LightEntityFeature.EFFECT
-        | LightEntityFeature.FLASH
-        | LightEntityFeature.TRANSITION
-    )
+    # _attr_supported_features = (LightEntityFeature.)
+
+    _attr_supported_color_modes = {ColorMode.BRIGHTNESS}
+
+    _attr_max_color_temp_kelvin = 100
+    _attr_min_color_temp_kelvin = 1
