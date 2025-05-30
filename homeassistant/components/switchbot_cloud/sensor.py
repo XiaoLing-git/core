@@ -33,6 +33,15 @@ SENSOR_TYPE_POWER = "power"
 SENSOR_TYPE_VOLTAGE = "voltage"
 SENSOR_TYPE_CURRENT = "electricCurrent"
 
+RELAY_SWITCH_2PM_SENSOR_TYPE_POWER_1 = "switch1Power"
+RELAY_SWITCH_SENSOR_TYPE_VOLTAGE_1 = "switch1Voltage"
+RELAY_SWITCH_SENSOR_TYPE_CURRENT_1 = "switch1ElectricCurrent"
+
+RELAY_SWITCH_2PM_SENSOR_TYPE_POWER_2 = "switch2Power"
+RELAY_SWITCH_SENSOR_TYPE_VOLTAGE_2 = "switch2Voltage"
+RELAY_SWITCH_SENSOR_TYPE_CURRENT_2 = "switch2ElectricCurrent"
+
+
 TEMPERATURE_DESCRIPTION = SensorEntityDescription(
     key=SENSOR_TYPE_TEMPERATURE,
     device_class=SensorDeviceClass.TEMPERATURE,
@@ -89,6 +98,61 @@ CO2_DESCRIPTION = SensorEntityDescription(
     native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION,
 )
 
+
+RELAY_SWITCH_2PM_POWER_1_DESCRIPTION = SensorEntityDescription(
+    key=RELAY_SWITCH_2PM_SENSOR_TYPE_POWER_1,
+    has_entity_name=True,
+    name="Switch Power 1",
+    device_class=SensorDeviceClass.POWER,
+    state_class=SensorStateClass.MEASUREMENT,
+    native_unit_of_measurement=UnitOfPower.WATT,
+)
+
+RELAY_SWITCH_2PM_VOLTAGE_1_DESCRIPTION = SensorEntityDescription(
+    key=RELAY_SWITCH_SENSOR_TYPE_VOLTAGE_1,
+    has_entity_name=True,
+    name="Switch Voltage 1",
+    device_class=SensorDeviceClass.VOLTAGE,
+    state_class=SensorStateClass.MEASUREMENT,
+    native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+)
+
+RELAY_SWITCH_2PM_CURRENT_1_DESCRIPTION_IN_MA = SensorEntityDescription(
+    key=RELAY_SWITCH_SENSOR_TYPE_CURRENT_1,
+    has_entity_name=True,
+    name="Switch Current 1",
+    device_class=SensorDeviceClass.CURRENT,
+    state_class=SensorStateClass.MEASUREMENT,
+    native_unit_of_measurement=UnitOfElectricCurrent.MILLIAMPERE,
+)
+
+RELAY_SWITCH_2PM_POWER_2_DESCRIPTION = SensorEntityDescription(
+    key=RELAY_SWITCH_2PM_SENSOR_TYPE_POWER_2,
+    has_entity_name=True,
+    name="Switch Power 2",
+    device_class=SensorDeviceClass.POWER,
+    state_class=SensorStateClass.MEASUREMENT,
+    native_unit_of_measurement=UnitOfPower.WATT,
+)
+
+RELAY_SWITCH_2PM_VOLTAGE_2_DESCRIPTION = SensorEntityDescription(
+    key=RELAY_SWITCH_SENSOR_TYPE_VOLTAGE_2,
+    has_entity_name=True,
+    name="Switch Voltage 2",
+    device_class=SensorDeviceClass.VOLTAGE,
+    state_class=SensorStateClass.MEASUREMENT,
+    native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+)
+
+RELAY_SWITCH_2PM_CURRENT_2_DESCRIPTION_IN_MA = SensorEntityDescription(
+    key=RELAY_SWITCH_SENSOR_TYPE_CURRENT_2,
+    has_entity_name=True,
+    name="Switch Current 2",
+    device_class=SensorDeviceClass.CURRENT,
+    state_class=SensorStateClass.MEASUREMENT,
+    native_unit_of_measurement=UnitOfElectricCurrent.MILLIAMPERE,
+)
+
 SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES = {
     "Bot": (BATTERY_DESCRIPTION,),
     "Meter": (
@@ -112,9 +176,12 @@ SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES = {
         CURRENT_DESCRIPTION_IN_MA,
     ),
     "Relay Switch 2PM": (
-        POWER_DESCRIPTION,
-        VOLTAGE_DESCRIPTION,
-        CURRENT_DESCRIPTION_IN_MA,
+        RELAY_SWITCH_2PM_POWER_1_DESCRIPTION,
+        RELAY_SWITCH_2PM_VOLTAGE_1_DESCRIPTION,
+        RELAY_SWITCH_2PM_CURRENT_1_DESCRIPTION_IN_MA,
+        RELAY_SWITCH_2PM_POWER_2_DESCRIPTION,
+        RELAY_SWITCH_2PM_VOLTAGE_2_DESCRIPTION,
+        RELAY_SWITCH_2PM_CURRENT_2_DESCRIPTION_IN_MA,
     ),
     "Plug Mini (US)": (
         VOLTAGE_DESCRIPTION,
@@ -153,7 +220,6 @@ async def async_setup_entry(
 ) -> None:
     """Set up SwitchBot Cloud entry."""
     data: SwitchbotCloudData = hass.data[DOMAIN][config.entry_id]
-
     async_add_entities(
         SwitchBotCloudSensor(data.api, device, coordinator, description)
         for device, coordinator in data.devices.sensors
