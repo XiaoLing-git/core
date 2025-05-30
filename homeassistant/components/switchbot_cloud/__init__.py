@@ -133,7 +133,9 @@ async def make_device_data(
         "Hub 2",
         "MeterPro",
         "MeterPro(CO2)",
+        "Relay Switch 1",
         "Relay Switch 1PM",
+        "Relay Switch 2PM",
         "Plug Mini (US)",
         "Plug Mini (JP)",
     ]:

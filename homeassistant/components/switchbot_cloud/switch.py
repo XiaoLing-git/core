@@ -86,6 +86,7 @@ def _async_make_entity(
     if "Plug" in device.device_type:
         return SwitchBotCloudPlugSwitch(api, device, coordinator)
     if device.device_type in [
+        "Relay Switch 2PM",
         "Relay Switch 1PM",
         "Relay Switch 1",
     ]:
