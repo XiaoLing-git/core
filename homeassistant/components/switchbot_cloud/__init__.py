@@ -21,7 +21,7 @@ from homeassistant.const import CONF_API_KEY, CONF_API_TOKEN, CONF_WEBHOOK_ID, P
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
-from .const import DOMAIN, ENTRY_TITLE
+from .const import DOMAIN, ENTRY_TITLE, SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES
 from .coordinator import SwitchBotCoordinator
 
 _LOGGER = getLogger(__name__)
@@ -126,17 +126,9 @@ async def make_device_data(
         )
         devices_data.switches.append((device, coordinator))
 
-    if isinstance(device, Device) and device.device_type in [
-        "Meter",
-        "MeterPlus",
-        "WoIOSensor",
-        "Hub 2",
-        "MeterPro",
-        "MeterPro(CO2)",
-        "Relay Switch 1PM",
-        "Plug Mini (US)",
-        "Plug Mini (JP)",
-    ]:
+    if isinstance(device, Device) and device.device_type in list(
+        SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES
+    ):
         coordinator = await coordinator_for_device(
             hass, entry, api, device, coordinators_by_id
         )
@@ -158,14 +150,12 @@ async def make_device_data(
             hass, entry, api, device, coordinators_by_id
         )
         devices_data.locks.append((device, coordinator))
-        devices_data.sensors.append((device, coordinator))
         devices_data.binary_sensors.append((device, coordinator))
 
     if isinstance(device, Device) and device.device_type in ["Bot"]:
         coordinator = await coordinator_for_device(
             hass, entry, api, device, coordinators_by_id
         )
-        devices_data.sensors.append((device, coordinator))
         if coordinator.data is not None:
             if coordinator.data.get("deviceMode") == "pressMode":
                 devices_data.buttons.append((device, coordinator))
