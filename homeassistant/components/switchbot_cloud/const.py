@@ -35,6 +35,7 @@ SENSOR_TYPE_POWER = "power"
 SENSOR_TYPE_VOLTAGE = "voltage"
 SENSOR_TYPE_CURRENT = "electricCurrent"
 
+
 TEMPERATURE_DESCRIPTION = SensorEntityDescription(
     key=SENSOR_TYPE_TEMPERATURE,
     device_class=SensorDeviceClass.TEMPERATURE,
@@ -90,6 +91,17 @@ CO2_DESCRIPTION = SensorEntityDescription(
     state_class=SensorStateClass.MEASUREMENT,
     native_unit_of_measurement=CONCENTRATION_PARTS_PER_MILLION,
 )
+
+
+COMMON_SENSOR_DESCRIPTION_LIST: list[SensorEntityDescription] = [
+    TEMPERATURE_DESCRIPTION,
+    HUMIDITY_DESCRIPTION,
+    BATTERY_DESCRIPTION,
+    VOLTAGE_DESCRIPTION,
+    CURRENT_DESCRIPTION_IN_A,
+    CO2_DESCRIPTION,
+]
+
 
 SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES = {
     "Bot": (BATTERY_DESCRIPTION,),

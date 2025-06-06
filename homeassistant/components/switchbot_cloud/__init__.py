@@ -114,7 +114,7 @@ async def make_device_data(
             hass, entry, api, device, coordinators_by_id
         )
         devices_data.climates.append((device, coordinator))
-    if (
+    elif (
         isinstance(device, Device)
         and (
             device.device_type.startswith("Plug")
@@ -126,7 +126,7 @@ async def make_device_data(
         )
         devices_data.switches.append((device, coordinator))
 
-    if isinstance(device, Device) and device.device_type in list(
+    elif isinstance(device, Device) and device.device_type in list(
         SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES
     ):
         coordinator = await coordinator_for_device(
@@ -134,7 +134,7 @@ async def make_device_data(
         )
         devices_data.sensors.append((device, coordinator))
 
-    if isinstance(device, Device) and device.device_type in [
+    elif isinstance(device, Device) and device.device_type in [
         "K10+",
         "K10+ Pro",
         "Robot Vacuum Cleaner S1",
@@ -145,22 +145,25 @@ async def make_device_data(
         )
         devices_data.vacuums.append((device, coordinator))
 
-    if isinstance(device, Device) and device.device_type.startswith("Smart Lock"):
+    elif isinstance(device, Device) and device.device_type.startswith("Smart Lock"):
         coordinator = await coordinator_for_device(
             hass, entry, api, device, coordinators_by_id
         )
         devices_data.locks.append((device, coordinator))
         devices_data.binary_sensors.append((device, coordinator))
 
-    if isinstance(device, Device) and device.device_type in ["Bot"]:
+    elif isinstance(device, Device) and device.device_type in ["Bot"]:
         coordinator = await coordinator_for_device(
             hass, entry, api, device, coordinators_by_id
         )
+        devices_data.sensors.append((device, coordinator))
         if coordinator.data is not None:
             if coordinator.data.get("deviceMode") == "pressMode":
                 devices_data.buttons.append((device, coordinator))
             else:
                 devices_data.switches.append((device, coordinator))
+    else:
+        pass
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

@@ -8,7 +8,11 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import SwitchbotCloudData
-from .const import DOMAIN, SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES
+from .const import (
+    COMMON_SENSOR_DESCRIPTION_LIST,
+    DOMAIN,
+    SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES,
+)
 from .coordinator import SwitchBotCoordinator
 from .entity import SwitchBotCloudEntity
 
@@ -21,11 +25,32 @@ async def async_setup_entry(
     """Set up SwitchBot Cloud entry."""
     data: SwitchbotCloudData = hass.data[DOMAIN][config.entry_id]
 
-    async_add_entities(
-        SwitchBotCloudSensor(data.api, device, coordinator, description)
-        for device, coordinator in data.devices.sensors
-        for description in SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES[device.device_type]
-    )
+    cloud_sensor_entities: list[SwitchBotCloudSensor] = []
+    for device, coordinator in data.devices.sensors:
+        if not coordinator.data:
+            continue
+        if device.device_type in list(SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES):
+            for description in SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES[device.device_type]:
+                if coordinator.data.get(description.key):
+                    cloud_sensor_entities.extend(
+                        [
+                            SwitchBotCloudSensor(
+                                data.api, device, coordinator, description
+                            )
+                        ]
+                    )
+        else:
+            for description in COMMON_SENSOR_DESCRIPTION_LIST:
+                if coordinator.data.get(description.key):
+                    cloud_sensor_entities.extend(
+                        [
+                            SwitchBotCloudSensor(
+                                data.api, device, coordinator, description
+                            )
+                        ]
+                    )
+
+    async_add_entities(cloud_sensor_entities)
 
 
 class SwitchBotCloudSensor(SwitchBotCloudEntity, SensorEntity):
