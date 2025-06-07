@@ -21,8 +21,9 @@ from homeassistant.const import CONF_API_KEY, CONF_API_TOKEN, CONF_WEBHOOK_ID, P
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
-from .const import DOMAIN, ENTRY_TITLE, SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES
+from .const import DOMAIN, ENTRY_TITLE
 from .coordinator import SwitchBotCoordinator
+from .sensor import SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES
 
 _LOGGER = getLogger(__name__)
 PLATFORMS: list[Platform] = [
