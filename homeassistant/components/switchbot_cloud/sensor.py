@@ -29,6 +29,7 @@ async def async_setup_entry(
     for device, coordinator in data.devices.sensors:
         if not coordinator.data:
             continue
+        # add special sensors with description
         if device.device_type in list(SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES):
             for description in SENSOR_DESCRIPTIONS_BY_DEVICE_TYPES[device.device_type]:
                 if coordinator.data.get(description.key):
@@ -39,6 +40,7 @@ async def async_setup_entry(
                             )
                         ]
                     )
+        # add common sensors with description
         else:
             for description in COMMON_SENSOR_DESCRIPTION_LIST:
                 if coordinator.data.get(description.key):
