@@ -279,8 +279,8 @@ async def make_device_data(
         coordinator = await coordinator_for_device(
             hass, entry, api, device, coordinators_by_id
         )
-        # devices_data.water_heaters.append((device, coordinator))
-        devices_data.sensors.append((device, coordinator))
+        devices_data.water_heaters.append((device, coordinator))
+        # devices_data.sensors.append((device, coordinator))
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
