@@ -9,6 +9,7 @@ from logging import getLogger
 from aiohttp import web
 from switchbot_api import (
     Device,
+    KeyPadCommands,
     Remote,
     SwitchBotAPI,
     SwitchBotAuthenticationError,
@@ -316,6 +317,15 @@ async def make_device_data(
         devices_data.buttons.append((device, coordinator))
         devices_data.sensors.append((device, coordinator))
         devices_data.images.append((device, coordinator))
+
+    if (
+        isinstance(device, Device)
+        and device.device_type in KeyPadCommands.get_supported_devices()
+    ):
+        coordinator = await coordinator_for_device(
+            hass, entry, api, device, coordinators_by_id
+        )
+        devices_data.buttons.append((device, coordinator))
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

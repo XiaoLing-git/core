@@ -1,6 +1,8 @@
 """Support for the Switchbot Bot as a Button."""
 
 from dataclasses import dataclass
+import random
+import time
 from typing import Any
 
 from switchbot_api import (
@@ -9,7 +11,12 @@ from switchbot_api import (
     Remote,
     SwitchBotAPI,
 )
-from switchbot_api.commands import ArtFrameCommands, BotCommands, CommonCommands
+from switchbot_api.commands import (
+    ArtFrameCommands,
+    BotCommands,
+    CommonCommands,
+    KeyPadCommands,
+)
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.config_entries import ConfigEntry
@@ -17,7 +24,7 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import SwitchbotCloudData, SwitchBotCoordinator
-from .const import DOMAIN
+from .const import DEFAULT_EXPIRED_DURATION, DOMAIN
 from .entity import SwitchBotCloudEntity
 
 
@@ -46,6 +53,12 @@ ART_FRAME_PREVIOUS_BUTTON_DESCRIPTION = SwitchbotCloudButtonEntityDescription(
     command=ArtFrameCommands.PREVIOUS,
 )
 
+KEYPAD_CREATE_KEY_BUTTON_DESCRIPTION = SwitchbotCloudButtonEntityDescription(
+    key="createKey",
+    translation_key="keypad_create_key",
+    command=KeyPadCommands.CREATE_KEY,
+)
+
 
 BUTTON_DESCRIPTIONS_BY_DEVICE_TYPES = {
     "Bot": (BOT_BUTTON_DESCRIPTION,),
@@ -53,6 +66,7 @@ BUTTON_DESCRIPTIONS_BY_DEVICE_TYPES = {
         ART_FRAME_NEXT_BUTTON_DESCRIPTION,
         ART_FRAME_PREVIOUS_BUTTON_DESCRIPTION,
     ),
+    "Keypad Vision Pro": (KEYPAD_CREATE_KEY_BUTTON_DESCRIPTION,),
 }
 
 
@@ -103,6 +117,27 @@ class SwitchBotCloudBot(SwitchBotCloudEntity, ButtonEntity):
         )
 
 
+class SwitchBotCloudKeypadButton(SwitchBotCloudBot):
+    """Representation of a SwitchBot Keypad."""
+
+    async def async_press(self, **kwargs: Any) -> None:
+        """Button press command."""
+        password = f"{random.randint(100000, 999999)}"
+        description_parameters = {
+            "name": "PW" + f"{int(time.time())}"[-8:],
+            "type": "disposable",
+            "password": password,
+            "startTime": int(time.time()),
+            "endTime": int(time.time()) + DEFAULT_EXPIRED_DURATION,
+        }
+        await self._api.send_command(
+            self._device_id,
+            self.entity_description.command.value,
+            self.entity_description.command_type,
+            description_parameters,
+        )
+
+
 @callback
 def _async_make_entity(
     api: SwitchBotAPI,
@@ -111,4 +146,6 @@ def _async_make_entity(
     description: SwitchbotCloudButtonEntityDescription,
 ) -> SwitchBotCloudBot:
     """Make a button entity."""
+    if device.device_type in KeyPadCommands.get_supported_devices():
+        return SwitchBotCloudKeypadButton(api, device, coordinator, description)
     return SwitchBotCloudBot(api, device, coordinator, description)

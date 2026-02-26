@@ -24,6 +24,9 @@
       },
       "art_frame_previous_picture": {
         "name": "Previous"
+      },
+      "keypad_create_key": {
+        "name": "Create Password"
       }
     },
     "fan": {

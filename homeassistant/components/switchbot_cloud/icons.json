@@ -6,6 +6,9 @@
       },
       "art_frame_previous_picture": {
         "default": "mdi:chevron-left-box"
+      },
+      "keypad_create_key": {
+        "default": "mdi:chevron-right-box"
       }
     },
     "fan": {
